@@ -1,7 +1,5 @@
 package com.nuvu.corenuvu.controller;
 
-
-
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -30,10 +28,19 @@ public class ClientController {
 	private static final Logger logger = LoggerFactory.getLogger(ClientController.class);
 	@PostMapping("/client/create")
 	public ResponseEntity<ClientDto> create(@RequestBody @NotNull  ClientDto clientDto,  @RequestHeader MultiValueMap<String, String> headers){
-		logger.debug("Begin create");		
-		ResponseEntity<ClientDto> response=new ResponseEntity<>(clientDto,HttpStatus.OK);
+		logger.debug("Begin create");	
+		ResponseEntity<ClientDto> response=null;
+		try {	
+		 response=new ResponseEntity<>(clientDto,HttpStatus.OK);
+		
 		processService.registerClient(clientDto);
 		logger.debug("End create");
+		}catch (Exception e) {
+			logger.error("Error General", e);	
+			ClientDto client= new ClientDto();
+			client.setName("error");
+			response=new ResponseEntity<>(client,HttpStatus.OK);
+		}
 		return response;
 		
 	}
